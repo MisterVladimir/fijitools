@@ -83,19 +83,19 @@ class Hdf5Writer(Writer):
         self._file = h5py.File(h5path)
         self.data_length = None
 
-    def write(self, roi, image_name, attrs):
+    def write(self, roi, attrs, *args):
         """
         """
-        data = roi.to_nested_dict(attrs, image_name, attrs[-1])
-        self._recursively_save_dict_contents_to_group('/', data)
+        data = roi.to_nested_dict(attrs, *args)
+        self._recursively_save('/', data)
 
-    def _recursively_save_dict_contents_to_group(self, path, dic):
+    def _recursively_save(self, path, dic):
         """
+        Recursively save dict items to group.
         """
         for key, val in dic.items():
             if isinstance(val, dict):
-                self._recursively_save_dict_contents_to_group(path + key + '/',
-                                                              val)
+                self._recursively_save(path + key + '/', val)
             elif isinstance(val, np.ndarray):
                 if self.data_length is None:
                     self.data_length = len(val)

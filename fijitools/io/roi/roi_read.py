@@ -103,8 +103,8 @@ class IJZipReader(Reader):
         Zip files may be password protected.
 
         name: str
-        How to (re)name the zip file's data. If left as None, name is the file
-        name.
+        How to (re)name the zip file. If left as None, name is the file
+        name sans extension.
         """
         if name is None:
             name = os.path.basename(path).split(os.path.extsep)[0]

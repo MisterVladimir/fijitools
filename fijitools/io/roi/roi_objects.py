@@ -49,6 +49,7 @@ class BaseROI(ABC):
     def __init__(self, common, props, from_ImageJ=True):
         # populate properties common to all ROI into a numpy array
         # this makes it convenient to later export self as an ImageJ bytestream
+        self.from_ImageJ = from_ImageJ
         if from_ImageJ:
             # loaded with roi_read.IJZipReader, already formated
             self.select_params = common
@@ -131,21 +132,24 @@ class BaseROI(ABC):
             raise TypeError('roi_props may only be set with a string, bytes'
                             'or dictionary.')
 
-    @property
-    def ctz(self):
-        return self.select_params[0][['c', 't', 'z']]
+    def _correct_ctz_index(self, ind):
+        # ImageJ data is 1-indexed
+        if self.from_ImageJ:
+            return ind - 1
+        else:
+            return ind
 
     @property
     def c(self):
-        return self.ctz['c']
+        return self._correct_ctz_index(self.select_params['c'])
 
     @property
     def t(self):
-        return self.ctz['t']
+        return self._correct_ctz_index(self.select_params['t'])
 
     @property
     def z(self):
-        return self.ctz['z']
+        return self._correct_ctz_index(self.select_params['z'])
 
     @property
     def subpixel(self):
@@ -231,13 +235,16 @@ class BaseROI(ABC):
     @classmethod
     def to_IJ(cls, roi, name, image_name=''):
         """
-        Organizes ROI information common to all ROI types. Child classes
-        should () methods to ()
+        Generates a bytestream that, after saving to a ZIP archive, can be
+        read by FIJI/ImageJ.
 
         Arguments
         -----------
-        roi: BaseROI
-        Any concrete child class of BaseROI.
+        roi: concrete subclasses of BaseROI
+        The ROI to be saved as if it were of type cls. That is, if we want
+        to save an EllipseROI as a RectROI, we would pass the instance of
+        the EllipseROI to the RectROI class object. Note that the class of
+        'roi' must be in cls' compatible_roi list.
 
         name: str
         Name of the ROI.
@@ -247,18 +254,7 @@ class BaseROI(ABC):
 
         Returns
         -----------
-        hdr: numpy.ndarray
-        dtype is HEADER_DTYPE.
-
-        hdr2: numpy.ndarray
-        dtype is HEADER2_DTYPE.
-
-        encoded_roi_name: bytes[]
-        ROI name, encoded as big endian shorts.
-
-        roi_props: fijitools.helpers.data_structures.RoiPropsDict
-        ROI properties associated with roi.
-
+        bytes
         """
         hdr = np.zeros(1, dtype=HEADER_DTYPE)
         hdr2 = np.zeros(1, dtype=HEADER2_DTYPE)
@@ -335,10 +331,11 @@ class BaseROI(ABC):
             key = str(getattr(self, attr))
             ret[key] = last
             last = copy.copy(ret)
-        for arg in reversed(args):
-            ret = {}
-            ret[arg] = last
-            last = copy.copy(ret)
+        if args:
+            for arg in reversed(args):
+                ret = {}
+                ret[arg] = last
+                last = copy.copy(ret)
 
         return ret
 
