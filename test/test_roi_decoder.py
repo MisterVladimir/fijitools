@@ -21,30 +21,36 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import unittest
 import os
-from abc import ABC, abstractmethod
+from addict import Dict
 
+from test import AbstractTestClass
 from fijitools.io.roi import roi_read
 
-
-def get_path(name):
-    return os.path.abspath(os.path.join(os.path.curdir, 'test', 'data', name))
-
-
-class ReadTest(ABC):
-    name = None
-
-    def test_read(self):
-        path = get_path(self.name)
-        with roi_read.IJZipReader() as reader:
-            reader.read(path)
+true_common = Dict({'0': {'c': 0, 't': 0, 'z': 0, 'centroid': [42.5, 193.],
+                          'top_left': [6., 156.], 'sides': [73., 74.]},
+                    '1': {'c': 1, 't': 1, 'z': 1, 'centroid': [120.5, 133.5],
+                          'top_left': [86., 108.], 'sides': [69., 51.]},
+                    '2': {'c': 0, 't': 1, 'z': 1, 'centroid': [179., 230.5],
+                          'top_left': [149., 169.], 'sides': [60., 123.]}})
 
 
-class RectReadTest(unittest.TestCase, ReadTest):
-    name = 'rectangles.zip'
+class ReadTest(AbstractTestClass, unittest.TestCase):
+    def test_common_params(self):
+        for k in true_common.keys():
+            roi = self.data[self.zipname]['item'][k]
+            roi_dict = {'c': roi.c, 't': roi.t, 'z': roi.z,
+                        'centroid': list(roi.centroid['px']),
+                        'top_left': list(roi.top_left['px']),
+                        'sides': list(roi.sides['px'])}
+            self.assertDictEqual(roi_dict, true_common[k])
 
 
-class OvalReadTest(unittest.TestCase, ReadTest):
-    name = 'ovals.zip'
+class RectReadTest(ReadTest):
+    roi_path = ReadTest.as_path('rectangles.zip')
+
+
+class OvalReadTest(ReadTest):
+    roi_path = ReadTest.as_path('ovals.zip')
 
 
 if __name__ == '__main__':

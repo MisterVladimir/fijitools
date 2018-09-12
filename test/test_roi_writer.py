@@ -21,31 +21,33 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import unittest
 import os
-from abc import ABC
+from test import AbstractTestClass
 
-from fijitools.io.roi import roi_write
-
-
-class WriteTest(ABC):
-    name = None
-
-    @staticmethod
-    def get_path(name):
-        return os.path.abspath(os.path.join(
-            os.path.curdir, 'test', 'data', name))
-
-    def test_read(self):
-        path = self.get_path(self.name)
-        with roi_read.IJZipReader() as reader:
-            reader.read(path)
+from fijitools.io.roi import (roi_write, roi_read)
 
 
-class RectWriteTest(unittest.TestCase, WriteTest):
-    name = 'rectangles.zip'
+class WriteTest(AbstractTestClass):
+    def test_write_one(self):
+        roi = self.data[self.zipname]['item']['0']
+        with roi_write.Hdf5Writer(self.h5_path) as w:
+            w.write(roi, ('t', 'c', 'centroid'), 'im', 'centroid')
+
+    def tearDown(self):
+        try:
+            os.remove(self.h5_path)
+        except OSError:
+            print("There was an error while attempting to remove {}.".format(
+                  self.h5_path))
 
 
-class OvalWriteTest(unittest.TestCase, WriteTest):
-    name = 'ovals.zip'
+class RectWriteTest(WriteTest, unittest.TestCase):
+    roi_path = WriteTest.as_path('rectangles.zip')
+    h5_path = WriteTest.as_path('rectangles.h5')
+
+
+class OvalWriteTest(WriteTest, unittest.TestCase):
+    roi_path = WriteTest.as_path('ovals.zip')
+    h5_path = WriteTest.as_path('ovals.h5')
 
 
 if __name__ == '__main__':
