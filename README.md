@@ -1,9 +1,18 @@
 fijitools
 ------------------
 
-**Author**: 'Vladimir Shteyn <https://github.com/mistervladimir>'
+**Author**: Vladimir Shteyn 
+
+**GitHub**: [GitHub](https://github.com/mistervladimir)
+
+**LinkedIn**: [LinkedIn](https://www.linkedin.com/in/vladimir-shteyn/)
+
+
+Introduction
+==================
 
 fijitools is a Python API for working with Fiji/ImageJ ROI data. 
+
 
 Features 
 ==================
