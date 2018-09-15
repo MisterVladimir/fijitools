@@ -17,7 +17,9 @@ fijitools is a Python API for working with Fiji/ImageJ ROI data.
 Features 
 ------------------
 **ROI I/O**: Reading ImageJ/FIJI region of interest (ROI) data saved in .zip format. ROI bytestream data from the entire .zip file is parsed all together as a single numpy array, and dispatched to classes particular to each ROI type. Currently all ROI may be read, but only ROI objects for rectangles and ellipses have been written. Python ROI instances may be converted back to ImageJ/FIJI bytestreams, saved as .zip files, and read by ImageJ/FIJI. This is a work in progress.
+
 **CSV Parsing**: Uses regular expressions to filter ImageJ/FIJI data generated with the RoiManager->Multi-Measure tool and saved as CSV files.
+
 **Convenience Functions**: various data structures and functions to make life easier. Specialized data structures for managing parsed ImageJ/FIJI data.
 
 
