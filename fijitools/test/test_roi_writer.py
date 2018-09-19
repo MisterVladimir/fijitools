@@ -21,9 +21,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import unittest
 import os
-from test import AbstractTestClass
 
-from fijitools.io.roi import (roi_write, roi_read)
+from fijitools.test import AbstractTestClass, DATA_DIR, run_tests
+from fijitools.io.roi import roi_write
 
 
 class WriteTest(AbstractTestClass):
@@ -41,19 +41,17 @@ class WriteTest(AbstractTestClass):
 
 
 class RectWriteTest(WriteTest, unittest.TestCase):
-    roi_path = WriteTest.as_path('rectangles.zip')
-    h5_path = WriteTest.as_path('rectangles.h5')
+    roi_path = DATA_DIR + 'rectangles.zip'
+    h5_path = DATA_DIR + 'rectangles.h5'
 
 
 class OvalWriteTest(WriteTest, unittest.TestCase):
-    roi_path = WriteTest.as_path('ovals.zip')
-    h5_path = WriteTest.as_path('ovals.h5')
+    roi_path = DATA_DIR + 'ovals.zip'
+    h5_path = DATA_DIR + 'ovals.h5'
 
+
+def run():
+    run_tests(RectWriteTest, OvalWriteTest)
 
 if __name__ == '__main__':
-    test_classes = (RectWriteTest, OvalWriteTest)
-    loader = unittest.TestLoader()
-    runner = unittest.TextTestRunner(verbosity=2)
-    for class_ in test_classes:
-        loaded_tests = loader.loadTestsFromTestCase(class_)
-        runner.run(loaded_tests)
+    run()

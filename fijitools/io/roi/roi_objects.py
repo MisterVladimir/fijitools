@@ -676,9 +676,9 @@ def ROI(bounding_rect, common, points, props, typ, from_ImageJ=True):
     if common['subtype'] == SUBTYPE['ellipse']:
         return EllipseROI(common=common, props=props, from_ImageJ=from_ImageJ,
                           bounding_rect=bounding_rect, points=points)
-    elif common['subtype'] == SUBTYPE['text']:
-        return TextROI(common=common, props=props, from_ImageJ=from_ImageJ, 
-                       bounding_rect=bounding_rect, points=points)
+    # elif common['subtype'] == SUBTYPE['text']:
+    #     return TextROI(common=common, props=props, from_ImageJ=from_ImageJ, 
+    #                    bounding_rect=bounding_rect, points=points)
     else:
         cls_ = number_to_roi_class[typ]
         return cls_(common=common, props=props, from_ImageJ=from_ImageJ, 

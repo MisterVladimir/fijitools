@@ -23,7 +23,7 @@ import unittest
 import os
 from addict import Dict
 
-from test import AbstractTestClass
+from fijitools.test import AbstractTestClass, DATA_DIR, run_tests
 from fijitools.io.roi import roi_read
 
 true_common = Dict({'0': {'c': 0, 't': 0, 'z': 0, 'centroid': [42.5, 193.],
@@ -46,17 +46,16 @@ class ReadTest(AbstractTestClass, unittest.TestCase):
 
 
 class RectReadTest(ReadTest):
-    roi_path = ReadTest.as_path('rectangles.zip')
+    roi_path = DATA_DIR + 'rectangles.zip'
 
 
 class OvalReadTest(ReadTest):
-    roi_path = ReadTest.as_path('ovals.zip')
+    roi_path = DATA_DIR + 'ovals.zip'
+
+
+def run():
+    run_tests(RectReadTest, OvalReadTest)
 
 
 if __name__ == '__main__':
-    test_classes = (RectReadTest, OvalReadTest)
-    loader = unittest.TestLoader()
-    runner = unittest.TextTestRunner(verbosity=2)
-    for class_ in test_classes:
-        loaded_tests = loader.loadTestsFromTestCase(class_)
-        runner.run(loaded_tests)
+    run()

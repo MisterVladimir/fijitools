@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*- 
 """
 @author: Vladimir Shteyn
 @email: vladimir.shteyn@googlemail.com
@@ -18,21 +18,31 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-
 import unittest
-from os import sep
-from fijitools.io.roi import roi_read
+
+from fijitools.helpers import data_structures as ds
+from fijitools.test import run_tests
 
 
-class PathFinderTest(unittest.TestCase):
-    # placeholder 
-    pass
+class TrackedListTest(unittest.TestCase):
+    def test_create(self):
+        self.li = ds.TrackedList()
+
+    def test_adding(self):
+        compare_list = ['appended', 'inserted', 'item_set', 'item_added']
+        self.li = ds.TrackedList()
+        self.li.append('appended')
+        self.li.insert(1, 'inserted')
+        self.li.append(None)
+        self.li[2] = 'item_set'
+        self.li += ['item_added']
+        for comp, item in zip(compare_list, self.li):
+            self.assertEqual(comp, item)
+
+
+def run():
+    run_tests(TrackedListTest)
 
 
 if __name__ == '__main__':
-    test_classes = (PathFinderTest, )
-    loader = unittest.TestLoader()
-    runner = unittest.TextTestRunner(verbosity=2)
-    for class_ in test_classes:
-        loaded_tests = loader.loadTestsFromTestCase(class_)
-        runner.run(loaded_tests)
+    run()

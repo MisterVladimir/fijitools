@@ -43,7 +43,6 @@ if __name__ == '__main__':
     ver = info.package.version
     url = info.about.home
     req = info.requirements.run
-    del req[req.index('python')]
 
     setup(name='fijitools',
           version=ver,
@@ -57,6 +56,7 @@ if __name__ == '__main__':
           download_url=r'{0}/archive/{1}.tar.gz'.format(url, ver),
           long_description=README,
           license="GNUv3",
+          test_suite='fijitools.test.run_tests',
           classifiers=[
               'Intended Audience :: Science/Research',
               'Programming Language :: Python :: 3.6'])

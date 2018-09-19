@@ -10,15 +10,20 @@ requirements:
   host:
     - python
     - setuptools
+    - pyyaml
 
   run:
-    - python
     - numpy
     - pyqt5
+    - h5py
+    - addict
+    - pandas
+    - six
+    - pyyaml
 
 test:
-  imports:
-    -
+  soure_files:
+    - fijitools/test/data/*
 
 about:
   home: https://github.com/mistervladimir/fijitools
