@@ -21,7 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import numpy as np
 import csv
 import re
-from pandas import read_csv
+import pandas as pd
 from abc import ABC, abstractmethod
 
 
@@ -77,7 +77,7 @@ class HeaderGetter(ABC):
         rw : int
             Row number whose values you want to return as strings.
         """
-        with open(fp, 'rb') as input_file:
+        with open(fp, 'r') as input_file:
             reader = csv.DictReader(input_file)
             if rw is 0:
                 return reader.fieldnames
@@ -132,8 +132,8 @@ class FilteredCSV(HeaderGetter):
             self.filter_header(measurements)
 
     def get_data(self):
-        self.data = read_csv(self.filepath, header=self.header_row,
-                             usecols=self.header)
+        self.data = pd.read_csv(self.filepath, header=self.header_row,
+                                usecols=self.header)
 
     def filter_header(self, measurements):
         h = [h for h in self.header for me in measurements if re.match(me, h)]
@@ -152,5 +152,5 @@ class FloatCSV(FilteredCSV):
         super().__init__(filepath, measurements)
 
     def get_data(self):
-        return read_csv(self.filepath, engine='c', dtype=np.float32,
-                        usecols=self.header)
+        return pd.read_csv(self.filepath, engine='c', dtype=np.float32,
+                           usecols=self.header)

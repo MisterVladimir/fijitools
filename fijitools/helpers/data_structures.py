@@ -78,6 +78,7 @@ class IndexedDict(Dict):
                 return method(keys, value)
 
 
+# very buggy
 class TrackedList(list):
     """
     List that keeps track of items added and removed.
@@ -102,7 +103,7 @@ class TrackedList(list):
 
     def pop(self):
         self._append_removeable(self[-1])
-        super().pop()
+        return super().pop()
 
     def _append_addable(self, item):
         if np.iterable(item) and not isinstance(item, (str,)):

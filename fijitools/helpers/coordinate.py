@@ -24,11 +24,12 @@ from abc import ABC
 from copy import copy
 from collections import OrderedDict
 
+from .iteration import isiterable
 
+
+# BUG: setting values to zero gets division by zero error when getting pixelsize
 class Coordinate(dict):
     _unit_conversion = OrderedDict([('nm', 1e-6), ('um', 1e-3), ('m', 1.)])
-    supported = {'iterables': (np.ndarray, list, tuple),
-                 'numbers': numbers.Real}
 
     def __init__(self, **kwargs):
         intersection = np.intersect1d(kwargs.keys(),
@@ -38,7 +39,7 @@ class Coordinate(dict):
         super().__init__()
 
         for k, v in kwargs.items():
-            if isinstance(v, self.supported['iterables']):
+            if isiterable(v):
                 kwargs[k] = np.array(v)
 
         super().__init__(**kwargs)
@@ -65,11 +66,11 @@ class Coordinate(dict):
             return length[0]
 
     def _check_iterable(self, value):
-        if isinstance(value, self.supported['iterables']) and \
-                len(self) == len(value):
+        if not len(self) and isiterable(value):
             return True
-
-        elif isinstance(value, self.supported['numbers']):
+        elif isiterable(value) and len(self) == len(np.array(value)):
+                return True
+        elif isinstance(value, numbers.Real):
             return False
         else:
             raise TypeError("{} (type {}) is not supported.".format(
@@ -193,34 +194,23 @@ class Coordinate(dict):
             return NotImplemented
 
     def __add__(self, other):
-        if self._is_valid_operand(other):
+        other = Coordinate(**other)
+        me = Coordinate(**self)
+        try:
+            ps = me.pixelsize is not None
+            other_ps = other.pixelsize is not None
+            if ps:
+                other.pixelsize = me.pixelsize
+            elif other_ps:
+                me.pixelsize = other.pixelsize
             kwargs = {k: self[k] + other[k] for k in
-                      self.keys() if k in other.keys()}
+                      me.keys() if k in other.keys()}
             return Coordinate(**kwargs)
-        else:
+        except (AttributeError, KeyError):
             return NotImplemented
-        # # TODO: remove assert statements
-        # try:
-        #     assert other.pixelsize == self.pixelsize
-        #     assert other.ou_size == self.ou_size
-        #     assert len(other) == len(self)
-        #     common = np.intersect1d(list(self.keys()), list(other.keys()))
 
-        # except AttributeError:
-        #     raise TypeError('We can only add Coordinates with other '
-        #                     'Coordinates.')
-        # except AssertionError:
-        #     raise TypeError('Coordinate lengths or pixelsizes are not equal.')
-
-        # else:
-        #     if len(self) > 0:
-        #         coord = self.__class__()
-        #         coord.update(**{k: self[k] + other[k] for k in common})
-        #         return coord
-        #     elif len(self) == 0:
-        #         return copy(other)
-        #     elif len(other) == 0:
-        #         return copy(self)
+    def __sub__(self, other):
+        return self.__add__(-1*other)
 
     def __mul__(self, other):
         coord = self.__class__()
@@ -283,7 +273,7 @@ class Coordinate(dict):
             # 'nm', 'um', 'm' aren't set, 'px' is
             # determine the 'nm'/'um'/'m' from the
             # number of pixels and passed-in pixelsize
-            self._expand_units('nm', ps['nm'] * ps_nm)
+            self._expand_units('nm', self['px'] * ps_nm)
         elif sum(mask) > 0 and 'px' in self.keys():
             raise AttributeError('Pixelsize and physical sizes are both'
                                  'already set.')
