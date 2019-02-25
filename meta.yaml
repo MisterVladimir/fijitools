@@ -8,20 +8,22 @@ source:
 
 requirements:
   host:
-    - python
+    - python>=3.6
     - setuptools
-    - pyyaml
+    - ruamel.yaml
 
   run:
     - numpy
-    - pyqt5
+    - pyqt5>=5.6
     - h5py
-    - addict
+    - addict>=2.2.0
     - pandas
     - six
-    - pyyaml
+    - ruamel.yaml
 
 test:
+  commands:
+    - python -m unittest discover -s test
   soure_files:
     - fijitools/test/data/*
 

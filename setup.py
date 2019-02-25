@@ -18,11 +18,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-from sys import platform, maxsize, version_info
-from os import environ
 from setuptools import setup
-from os import path
-import yaml
+from ruamel import yaml
 from addict import Dict
 
 
@@ -31,10 +28,9 @@ with open('README.md', 'r') as f:
 
 
 def get_package_info():
-    data = None
+    package_info_yaml = yaml.YAML()
     with open('meta.yaml', 'r') as f:
-        data = Dict(yaml.load(f.read()))
-    return data
+        return Dict(package_info_yaml.load(f))
 
 
 if __name__ == '__main__':

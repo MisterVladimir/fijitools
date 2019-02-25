@@ -69,21 +69,21 @@ class CoordinateTest(unittest.TestCase):
         # print('coord2: {}'.format(coord2))
         # print('equal: {}'.format(coord1 == coord2))
         self.assertTrue(all(coord1 == coord2))
-        self.assertEqual(coordinate.Coordinate(nm=1e3),
-                         coordinate.Coordinate(um=1))
+        self.assertTrue(
+            coordinate.Coordinate(nm=1000.) == coordinate.Coordinate(um=1.))
 
     def test_sum(self):
         intended_result = coordinate.Coordinate(um=(7., 6.))
         start_coord = coordinate.Coordinate(um=(5., 6.))
         to_add = coordinate.Coordinate(um=(2., 0.))
         result = start_coord + to_add
-        print('\n')
-        print("test_sum still has errors")
-        print("result         : {}".format(result))
-        print("intended result: {}".format(intended_result))
-        # TODO: no clue why result is [False, True]
+        self.assertTrue(np.all(intended_result == result))
+        # print('\n')
+        # print("test_sum still has errors")
+        # print("result         : {}".format(result))
+        # print("intended result: {}".format(intended_result))
         # setting to_add = Coordinate(um=(0., 0.)) returns [True, True]
-        print("intended_result == result: {}".format(intended_result == result))
+        # print("intended_result == result: {}".format(intended_result == result))
 
     def test_mul(self):
         intended_result = coordinate.Coordinate(um=(10., 12))

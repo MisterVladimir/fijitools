@@ -20,8 +20,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 import numpy as np
 import numbers
-from abc import ABC
-from copy import copy
 from collections import OrderedDict
 
 from .iteration import isiterable
@@ -29,6 +27,8 @@ from .iteration import isiterable
 
 # BUG: setting values to zero gets division by zero error when getting pixelsize
 class Coordinate(dict):
+    rtol = 1e-05
+    atol = 1e-08
     _unit_conversion = OrderedDict([('nm', 1e-6), ('um', 1e-3), ('m', 1.)])
 
     def __init__(self, **kwargs):
@@ -69,7 +69,7 @@ class Coordinate(dict):
         if not len(self) and isiterable(value):
             return True
         elif isiterable(value) and len(self) == len(np.array(value)):
-                return True
+            return True
         elif isinstance(value, numbers.Real):
             return False
         else:
@@ -87,7 +87,7 @@ class Coordinate(dict):
     def _expand_units(self, unit, value):
         # create values for 'm', 'um' and 'nm' units
         conversion = self._unit_conversion
-        d = {k: value * conversion[unit]/conversion[k] for k in conversion}
+        d = {k: value * conversion[unit] / conversion[k] for k in conversion}
         self.update(**d)
 
     def __call__(self, value, unit, newunit):
@@ -103,25 +103,22 @@ class Coordinate(dict):
         For ==, >, >=, <, <=, != comparisons.
         """
         try:
-            if len(self) == len(other) and len(self) > 1:
-                if other.pixelsize is None and self.pixelsize is None:
-                    px = True
-                else:
-                    px = all(other.pixelsize == self.pixelsize)
+            if self.ou_size is None and other.ou_size is None:
+                ou = True
+            if self.pixelsize is None and other.pixelsize is None:
+                ps = True
+            if ou and ps:
+                return True
 
-                if other.ou_size is None and self.ou_size is None:
-                    ou = True
-                else:
-                    ou = all(other.ou_size == self.ou_size)
-
+            if len(self) == len(other):
+                px = np.all(np.isclose(other.pixelsize, self.pixelsize),
+                            rtol=self.rtol, atol=self.atol)
+                ou = np.all(np.isclose(other.ou_size, self.ou_size),
+                            rtol=self.rtol, atol=self.atol)
                 return px and ou
 
-            elif len(self) == len(other) == 1:
-                px = other.pixelsize == self.pixelsize
-                ou = other.ou_size == self.ou_size
-                return px and ou
-            else:
-                return False
+            return False
+
         except (TypeError, AttributeError):
             return False
 
@@ -135,8 +132,9 @@ class Coordinate(dict):
         instances returns NotImplemented.
         """
         if self._is_valid_operand(other):
-            compare = np.array([self[k] == other[k] for k in
-                                self.keys() if k in other.keys()])
+            compare = np.array([np.isclose(self[k], other[k],
+                                           rtol=self.rtol, atol=self.atol)
+                                for k in self if k in other])
             if len(compare) == 0:
                 # no keys in common between self and other
                 return False
@@ -210,7 +208,7 @@ class Coordinate(dict):
             return NotImplemented
 
     def __sub__(self, other):
-        return self.__add__(-1*other)
+        return self.__add__(-1 * other)
 
     def __mul__(self, other):
         coord = self.__class__()
@@ -222,9 +220,9 @@ class Coordinate(dict):
     def __truediv__(self, other):
         it = self._check_iterable(other)
         if it and it is not NotImplemented:
-            return self.__mul__(1./np.array(other))
+            return self.__mul__(1. / np.array(other))
         else:
-            return self.__mul__(1./other)
+            return self.__mul__(1. / other)
 
     def __floordiv__(self, other):
         ret = self.__truediv__(other)
@@ -259,7 +257,7 @@ class Coordinate(dict):
         elif self._check_iterable(ps):
             ps_nm = np.array(ps)
         elif len(self) > 1:
-            ps_nm = np.array([ps]*len(self))
+            ps_nm = np.array([ps] * len(self))
         elif len(self) == 1:
             ps_nm = ps
 

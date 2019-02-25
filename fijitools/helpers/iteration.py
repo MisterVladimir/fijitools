@@ -1,42 +1,23 @@
-# -*- coding: utf-8 -*- 
-"""
-@author: Vladimir Shteyn
-@email: vladimir.shteyn@googlemail.com
-
-Copyright Vladimir Shteyn, 2018
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-"""
-
-
+# -*- coding: utf-8 -*-
 from six import string_types
-from collections import Iterable
+from typing import Any, Generator, Iterable, Iterator, List
 
 
-def isiterable(arg):
+def isiterable(arg: Any):
     # copied from
     # https://stackoverflow.com/questions/1055360/how-to-tell-a-variable-is-iterable-but-not-a-string/44328500#44328500
     return isinstance(arg, Iterable) and not isinstance(arg, string_types)
 
 
-def current_and_next(iterable, interval=1):
+def current_and_next(iterable: Iterable[Any],
+                     interval: int = 1
+                     ) -> Generator[Any, None, None]:
     """
     Return item at current index and the item an 'interval' array distance
-    forward. 
+    forward.
     """
-    iterator = iter(iterable)
-    missed = [next(iterator) for _ in range(interval)] 
+    iterator: Iterator[Any] = iter(iterable)
+    missed: List[Any] = [next(iterator) for _ in range(interval)]
     for next_ in iterator:
         yield missed[0], next_
         missed = missed[1:] + [next_]

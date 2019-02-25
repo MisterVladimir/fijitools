@@ -28,7 +28,7 @@ import datetime
 import json
 from struct import pack
 
-from fijitools.helpers.iteration import isiterable
+from .iteration import isiterable
 
 
 class IndexedDict(Dict):

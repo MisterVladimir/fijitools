@@ -25,7 +25,7 @@ import unittest
 from fijitools.io.roi import roi_read
 
 
-DATA_DIR = os.path.join(os.path.dirname(__file__), 'data') + os.path.sep
+DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
 
 
 def run_tests(*test_classes):
@@ -37,12 +37,14 @@ def run_tests(*test_classes):
 
 
 class AbstractTestClass(ABC):
-    roi_path = NotImplemented
-    h5_path = NotImplemented
+    roi_path = None
+    h5_path = None
 
     def setUp(self):
-        # load ROI data from ZIP file
-        with roi_read.IJZipReader(sep='-') as f:
-            self.zipname = os.path.splitext(os.path.basename(self.roi_path))[0]
-            f.read(self.roi_path, name=self.zipname)
-            self.data = f.data
+        """Load ROI data from ZIP file"""
+        # to overcome error in
+        if self.roi_path is not None:
+            with roi_read.IJZipReader(sep='-') as f:
+                self.zipname = os.path.splitext(os.path.basename(self.roi_path))[0]
+                f.read(self.roi_path, name=self.zipname)
+                self.data = f.data

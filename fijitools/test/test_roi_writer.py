@@ -41,13 +41,13 @@ class WriteTest(AbstractTestClass):
 
 
 class RectWriteTest(WriteTest, unittest.TestCase):
-    roi_path = DATA_DIR + 'rectangles.zip'
-    h5_path = DATA_DIR + 'rectangles.h5'
+    roi_path = os.path.join(DATA_DIR, 'rectangles.zip')
+    h5_path = os.path.join(DATA_DIR, 'rectangles.h5')
 
 
 class OvalWriteTest(WriteTest, unittest.TestCase):
-    roi_path = DATA_DIR + 'ovals.zip'
-    h5_path = DATA_DIR + 'ovals.h5'
+    roi_path = os.path.join(DATA_DIR, 'ovals.zip')
+    h5_path = os.path.join(DATA_DIR, 'ovals.h5')
 
 
 def run():

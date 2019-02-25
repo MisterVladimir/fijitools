@@ -20,13 +20,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 import numpy as np
-import pandas as pd
 import re
 import zipfile
 import os
 from struct import unpack, unpack_from
 from collections import OrderedDict
-from addict import Dict
 
 from fijitools.helpers.data_structures import IndexedDict
 from fijitools.io import IO

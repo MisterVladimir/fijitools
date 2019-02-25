@@ -23,8 +23,8 @@ import unittest
 import os
 from addict import Dict
 
-from fijitools.test import AbstractTestClass, DATA_DIR, run_tests
-from fijitools.io.roi import roi_read
+from fijitools.test import AbstractTestClass, DATA_DIR
+
 
 true_common = Dict({'0': {'c': 0, 't': 0, 'z': 0, 'centroid': [42.5, 193.],
                           'top_left': [6., 156.], 'sides': [73., 74.]},
@@ -34,7 +34,7 @@ true_common = Dict({'0': {'c': 0, 't': 0, 'z': 0, 'centroid': [42.5, 193.],
                           'top_left': [149., 169.], 'sides': [60., 123.]}})
 
 
-class ReadTest(AbstractTestClass, unittest.TestCase):
+class ReadTest(AbstractTestClass):
     def test_common_params(self):
         for k in true_common.keys():
             roi = self.data[self.zipname]['item'][k]
@@ -45,12 +45,12 @@ class ReadTest(AbstractTestClass, unittest.TestCase):
             self.assertDictEqual(roi_dict, true_common[k])
 
 
-class RectReadTest(ReadTest):
-    roi_path = DATA_DIR + 'rectangles.zip'
+class RectReadTest(ReadTest, unittest.TestCase):
+    roi_path = os.path.join(DATA_DIR, 'rectangles.zip')
 
 
-class OvalReadTest(ReadTest):
-    roi_path = DATA_DIR + 'ovals.zip'
+class OvalReadTest(ReadTest, unittest.TestCase):
+    roi_path = os.path.join(DATA_DIR, 'ovals.zip')
 
 
 def run():

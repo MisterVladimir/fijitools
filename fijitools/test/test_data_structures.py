@@ -21,7 +21,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import unittest
 
 from fijitools.helpers import data_structures as ds
-from fijitools.test import run_tests
 
 
 class TrackedListTest(unittest.TestCase):

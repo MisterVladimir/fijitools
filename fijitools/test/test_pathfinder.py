@@ -23,13 +23,10 @@ import glob
 import os
 
 from fijitools.io.path import PathFinder
-from fijitools.test import run_tests
+from . import DATA_DIR
 
 
 class PathFinderTest(unittest.TestCase):
-    def setUp(self):
-        self.folder = os.path.abspath('data')
-
     def test_create(self):
         finder = PathFinder(extension='zip')
 
@@ -37,22 +34,22 @@ class PathFinderTest(unittest.TestCase):
         finder = PathFinder(extension='zip')
         # print('folder: {}'.format(self.folder))
         self.assertEqual([('test_roi_basic.zip', )], finder.load(
-            self.folder + os.path.sep + 'test_roi_basic.zip'))
+            os.path.join(DATA_DIR, 'test_roi_basic.zip')))
 
     def test_zip_folder(self):
         correct = set([(os.path.basename(p), ) for p in glob.glob(
-            self.folder + os.path.sep + '*.zip')])
+            os.path.join(DATA_DIR, '*.zip'))])
         finder = PathFinder(extension='zip')
-        result = set(finder.load(self.folder))
+        result = set(finder.load(DATA_DIR))
         # print('result: {}'.format(result))
         # print('correct: {}'.format(correct))
         self.assertTrue(result == correct)
 
     def test_regexp(self):
-        correct = set([(os.path.basename(p), ) for p in glob.glob(
-            self.folder + os.path.sep + 'test_roi_*')])
+        correct = set((os.path.basename(p), ) for p in glob.glob(
+                os.path.join(DATA_DIR, 'test_roi_*')))
         finder = PathFinder(regexp='test_roi_.*', extension='zip')
-        result = set(finder.load(self.folder))
+        result = set(finder.load(DATA_DIR))
         # print('result: {}'.format(result))
         # print('correct: {}'.format(correct))
         self.assertTrue(result == correct)
