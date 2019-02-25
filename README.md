@@ -7,7 +7,7 @@ fijitools
 Introduction
 ------------------
 
-*fijitools* is a Python API for working with Fiji/ImageJ region of interest (ROI) data. To be clear, ROI includes things like bounding boxes, ovals, points, etc.; it's any way of marking a region of interest for further analysis.
+*fijitools* is a Python API for working with [ImageJ](https://imagej.net/Welcome)/[FIJI](https://fiji.sc/) region of interest (ROI) data. To be clear, ROI means things like bounding boxes, ovals, points, etc. overlaid on an image; an ROI is any way of marking a region of interest for further processing and analysis.
 
 
 Installation
@@ -17,7 +17,7 @@ pip install fijitools
 
 Features 
 ------------------
-**ROI I/O**: Reading [ImageJ](https://imagej.net/Welcome)/[FIJI](https://fiji.sc/) region of interest (ROI) data saved in .zip format. ROI bytestream data from the entire .zip file is parsed all together as a single numpy array, and dispatched to classes specific to each ROI type. Currently all ROI may be read, but Python objects for only rectangles and ellipses have been written. Python ROI instances may be converted back to ImageJ/FIJI bytestreams, saved as .zip files, and read by ImageJ/FIJI. This is a work in progress.
+**ROI I/O**: Reading ImageJ/FIJI region of interest (ROI) data saved in .zip format. ROI bytestream data from the entire .zip file is parsed all together as a single numpy array, and dispatched to classes specific to each ROI type. Currently all ROI may be read, but Python objects for only rectangles and ellipses have been written. Python ROI instances may be converted back to ImageJ/FIJI bytestreams, saved as .zip files, and read by ImageJ/FIJI. This is a work in progress.
 
 **CSV Parsing**: Uses regular expressions to filter ImageJ/FIJI data generated with the RoiManager -> Multi-Measure tool and saved as CSV files.
 
