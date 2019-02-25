@@ -55,4 +55,5 @@ if __name__ == '__main__':
           test_suite='fijitools.test.run_tests',
           classifiers=[
               'Intended Audience :: Science/Research',
-              'Programming Language :: Python :: 3.6'])
+              'Programming Language :: Python :: 3.6',
+              'Programming Language :: Python :: 3.7'])

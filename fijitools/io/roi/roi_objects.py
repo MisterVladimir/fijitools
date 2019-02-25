@@ -24,7 +24,7 @@ from struct import pack
 from collections import OrderedDict
 import warnings
 from abc import ABC, abstractmethod
-from PyQt5.QtGui import (QFont, QFontMetrics)
+from PyQt5.QtGui import QFont, QFontMetrics
 
 from fijitools.helpers.iteration import current_and_next
 from fijitools.helpers.coordinate import Coordinate
@@ -351,6 +351,9 @@ class TextROI(BaseROI):
         self.font_name = font_name
         self._set_bounding_rect(text, topleft, font_name, font_size)
 
+    def __str__(self) -> str:
+        return "TextROI: {}".format(self.text)
+
     def _set_bounding_rect(self, text, top_left, font_name, font_size):
         font = QFont(font_name, font_size)
         metrics = QFontMetrics(font)
@@ -412,6 +415,12 @@ class RectROI(NonTextROI):
                  **kwargs):
         super().__init__(common, props, from_ImageJ)
         self._set_bounding_rect(bounding_rect)
+
+    def __str__(self) -> str:
+        top_left = self._top_left
+        bottom_right = self._top_left + self._sides
+        return "RectROI: (x0={:f.2}, y0={:f.2}) ".format(*top_left) + \
+            "(x1={:f.2}, y1={:f.2})".format(*bottom_right)
 
     def _encode_points(self):
         return b''
@@ -515,6 +524,12 @@ class EllipseROI(PointContainingROI):
                 kwargs['aspect_ratio'] = self.select_params['aspect_ratio']
             # determine whether it's x0, y0 or xc, yc
             self._calculate_points(**kwargs)
+
+    def __str__(self) -> str:
+        top_left = self._top_left
+        bottom_right = self._top_left + self._sides
+        return "EllipseROI: (x0={:f.2}, y0={:f.2}) ".format(*top_left) + \
+            "(x1={:f.2}, y1={:f.2})".format(*bottom_right)
 
     def _encode_points(self):
         if self.subpixel:

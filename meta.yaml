@@ -1,6 +1,6 @@
 package:
-  name: personal-website
-  version: "0.2"
+  name: fijitools
+  version: "v0.1.0-unstable"
 
 source:
   git_rev: v0.2
@@ -14,7 +14,7 @@ requirements:
 
   run:
     - numpy
-    - pyqt5>=5.6
+    - pyqt>=5.6
     - h5py
     - addict>=2.2.0
     - pandas
